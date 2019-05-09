@@ -20,6 +20,6 @@ app.use(passportJWT.initialize());
 app.use('/api/auth', authRoutes);
 app.use(errorHandler);
 
-app.listen(8000, () => {
+app.listen(5000, () => {
   console.log('Listening');
 });
