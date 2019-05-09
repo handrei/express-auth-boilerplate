@@ -3,8 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+//middlewares
 const passportJWT = require('./middlewares/passportJWT')();
-const errorHandler = require('./middlewares/errorHandler');
 
 const authRoutes = require('./routes/auth');
 
@@ -18,7 +18,6 @@ app.use(bodyParser.json());
 app.use(passportJWT.initialize());
 
 app.use('/api/auth', authRoutes);
-app.use(errorHandler);
 
 app.listen(5000, () => {
   console.log('Listening');

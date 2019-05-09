@@ -1,25 +1,29 @@
 const jwt = require('jsonwebtoken');
 
 const config = require('../config');
-const validationHandler = require('../validations/validationHandler');
 const User = require('../models/user');
+const validateRegisterInput = require('../validations/register');
+const validateLoginInput = require('../validations/login');
 
 exports.login = async (req, res, next) => {
   try {
+    const { errors, isValid } = validateLoginInput(req.body);
     const email = req.body.email;
     const password = req.body.password;
 
+    //check validation
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
     user = await User.findOne({ email }).select('+password');
     if (!user) {
-      const error = new Error('Wrong credentials');
-      error.statusCode = 401;
-      throw error;
+      errors.email = 'user not found';
+      return res.status(404).json(errors);
     }
     const validPassword = await user.validPassword(password);
     if (!validPassword) {
-      const error = new Error('Wrong credentials');
-      error.statusCode = 401;
-      throw error;
+      errors.password = 'password incorrect';
+      return res.status(400).json(errors);
     }
     const payload = {
       id: user.id,
@@ -44,13 +48,15 @@ exports.login = async (req, res, next) => {
 
 exports.signup = async (req, res, next) => {
   try {
-    validationHandler(req);
-
+    const { errors, isValid } = validateRegisterInput(req.body);
+    //check validation
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
     const existingUser = await User.findOne({ email: req.body.email });
     if (existingUser) {
-      const error = new Error('Email already exists');
-      error.statusCode = 403;
-      throw error;
+      errors.email = 'email already exists';
+      return res.status(400).json(errors);
     }
     let user = new User();
     user.email = req.body.email;

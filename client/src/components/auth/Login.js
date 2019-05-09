@@ -61,7 +61,7 @@ class Login extends Component {
                   type='email'
                   value={this.state.email}
                   onChange={this.onChange}
-                  error={errors.message}
+                  error={errors.email}
                 />
                 <TextFieldGroup
                   placeholder='Password'
@@ -69,7 +69,7 @@ class Login extends Component {
                   type='password'
                   value={this.state.password}
                   onChange={this.onChange}
-                  error={errors.message}
+                  error={errors.password}
                 />
                 <input
                   type='submit'
